@@ -1,29 +1,32 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-#include <cstdio> // Do usuwania pliku
+#include <chrono>
 
 
 
 
+int rozmiar;
 
 void generowanie_pliku(const std::string& liczby) {
     std::ofstream plik("liczby.txt");
-    int iloscLiczb, zakresMin, zakresMax;
+    int zakresMin, zakresMax;
     std::cout << "Podaj ilosc liczb\n";
-    std::cin >> iloscLiczb;
+    std::cin >> rozmiar;
     std::cout << "Podaj zakres minimalny\n";
     std::cin >> zakresMin;
     std::cout << "Podaj zakres maksymalny\n";
     std::cin >> zakresMax;
 
 
+
+
     // Inicjalizacja generatora liczb losowych na podstawie czasu
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-    plik << iloscLiczb << std::endl;
+    plik << rozmiar-1 << std::endl;
 
-    for (int i = 0; i < iloscLiczb; i++) {
+    for (int i = 0; i < rozmiar-1; i++) {
         int liczba = zakresMin + std::rand() % (zakresMax - zakresMin + 1);
         plik << liczba << std::endl;
         std::string nazwaPliku = "liczby.txt";
@@ -49,11 +52,183 @@ void wyswietl_zawartosc_pliku(const std::string& liczby){
 
     plik.close();
 }
+void wstaw_do_tablicy_na_poczatek(int element) {
+    std::ifstream plik("liczby.txt");
 
-void wstaw_do_tablicy(){
+    if (!plik.is_open()) {
+        std::cout << "Nie można otworzyć pliku.\n";
+        return;
+    }
 
+    auto czas_start = std::chrono::high_resolution_clock::now();
+
+    plik >> rozmiar;
+
+    int* tablica = new int[rozmiar];
+    for (int i = 0; i < rozmiar; i++) {
+        plik >> tablica[i];
+    }
+    plik.close();
+
+    int* nowa_tablica = new int[rozmiar + 1];
+    for (int i = 0; i < rozmiar; i++) {
+        nowa_tablica[i + 1] = tablica[i];
+    }
+    nowa_tablica[0] = element;
+    rozmiar=rozmiar+1;
+
+    std::ofstream plik_wyjsciowy("liczby.txt");
+    plik_wyjsciowy << rozmiar << std::endl;
+    for (int i = 0; i < rozmiar; i++) {
+        plik_wyjsciowy << nowa_tablica[i] << std::endl;
+    }
+    plik_wyjsciowy.close();
+
+    delete[] tablica;
+    delete[] nowa_tablica;
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+    std::cout << "Element został wstawiony pomyślnie do pliku liczby.txt.\n";
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+    return;
+}
+void wstaw_do_tablicy_na_koniec(int element){
+        std::ifstream plik("liczby.txt");
+
+        if (!plik.is_open()) {
+            std::cout << "Nie można otworzyć pliku.\n";
+            return;
+        }
+
+        auto czas_start = std::chrono::high_resolution_clock::now();
+
+        plik >> rozmiar;
+
+        int* tablica = new int[rozmiar];
+        for (int i = 0; i < rozmiar; i++) {
+            plik >> tablica[i];
+        }
+        plik.close();
+
+        int* nowa_tablica = new int[rozmiar + 1];
+        for (int i = 0; i < rozmiar; i++) {
+            nowa_tablica[i] = tablica[i];
+        }
+        nowa_tablica[rozmiar] = element;
+        rozmiar++;
+
+        std::ofstream plik_wyjsciowy("liczby.txt");
+        plik_wyjsciowy << rozmiar << std::endl;
+        for (int i = 0; i < rozmiar; i++) {
+            plik_wyjsciowy << nowa_tablica[i] << std::endl;
+        }
+        plik_wyjsciowy.close();
+
+        delete[] tablica;
+        delete[] nowa_tablica;
+
+        auto czas_koniec = std::chrono::high_resolution_clock::now();
+        auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+        std::cout << "Element został wstawiony pomyślnie na koniec pliku liczby.txt.\n";
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+        return;
+    }
+    void wstaw_do_tablicy_losowo(int element){
+        std::ifstream plik("liczby.txt");
+
+        if (!plik.is_open()) {
+            std::cout << "Nie można otworzyć pliku.\n";
+            return;
+        }
+
+        auto czas_start = std::chrono::high_resolution_clock::now();
+
+        plik >> rozmiar;
+
+        int* tablica = new int[rozmiar];
+        for (int i = 0; i < rozmiar; i++) {
+            plik >> tablica[i];
+        }
+        plik.close();
+
+        int indeks = rand() % (rozmiar + 1);  // Losowy indeks w zakresie od 0 do rozmiar+1
+
+        int* nowa_tablica = new int[rozmiar + 1];
+        for (int i = 0; i < indeks; i++) {
+            nowa_tablica[i] = tablica[i];
+        }
+        nowa_tablica[indeks] = element;
+        for (int i = indeks + 1; i < rozmiar + 1; i++) {
+            nowa_tablica[i] = tablica[i - 1];
+        }
+        rozmiar++;
+
+        std::ofstream plik_wyjsciowy("liczby.txt");
+        plik_wyjsciowy << rozmiar << std::endl;
+        for (int i = 0; i < rozmiar; i++) {
+            plik_wyjsciowy << nowa_tablica[i] << std::endl;
+        }
+        plik_wyjsciowy.close();
+
+        delete[] tablica;
+        delete[] nowa_tablica;
+
+        auto czas_koniec = std::chrono::high_resolution_clock::now();
+        auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+        std::cout << "Element został wstawiony pomyślnie w losowe miejsce w pliku liczby.txt.\n";
+        std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+        return;
 }
 
+void wstaw_do_tablicy(){
+    int element;
+    int choice;
+    std::cout<<"Wpisz element jaki chcesz dodać do tablicy\n";
+    std::cin>>element;
+
+    while(true) {
+        std::cout << "Gdzie chcesz dodać element?\n";
+        std::cout << "1. Na początek\n";
+        std::cout << "2. Na koniec\n";
+        std::cout << "3. W losowe miejsce\n";
+        std::cout << "4. Powrót\n";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                std::cout << "Wybrano na początek\n";
+                wstaw_do_tablicy_na_poczatek(element);
+                break;
+            case 2:
+                std::cout << "Wybrano na koniec\n";
+                wstaw_do_tablicy_na_koniec(element);
+                break;
+            case 3:
+                std::cout << "Wybrano losowe miejsce\n";
+                wstaw_do_tablicy_losowo(element);
+                break;
+            case 4:
+                return;
+        }
+    }
+
+}
+void wstaw_do_listy(){
+    std::ifstream plik("liczby.txt");
+
+    if (!plik.is_open()) {
+        std::cout << "Nie można otworzyć pliku.\n";
+        return;
+    }
+
+}
+void wstaw_do_drzewa(){
+
+}
 void wstaw_element() {
 
     int choice;
@@ -75,9 +250,11 @@ void wstaw_element() {
                 break;
             case 2:
                 std::cout << "Wybrano wstawianie elementu do listy\n";
+                wstaw_do_listy();
                 break;
             case 3:
                 std::cout << "Wybrano wstawianie elementu do drzewa\n";
+                wstaw_do_drzewa();
                 break;
             case 4:
                 std::cout << "Powrót do menu głównego";
