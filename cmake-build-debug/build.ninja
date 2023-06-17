@@ -51,13 +51,7 @@ build cmake_object_order_depends_target_PROJEKT2: phony || CMakeFiles/PROJEKT2.d
 
 build CMakeFiles/PROJEKT2.dir/main.cpp.o: CXX_COMPILER__PROJEKT2_Debug /Users/bartek/Desktop/Politechnika/ROK$ 2/Beatka/PROJEKT2/main.cpp || cmake_object_order_depends_target_PROJEKT2
   DEP_FILE = CMakeFiles/PROJEKT2.dir/main.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -std=gnu++17
-  OBJECT_DIR = CMakeFiles/PROJEKT2.dir
-  OBJECT_FILE_DIR = CMakeFiles/PROJEKT2.dir
-
-build CMakeFiles/PROJEKT2.dir/beti_lista_4_zadanie_4.cpp.o: CXX_COMPILER__PROJEKT2_Debug /Users/bartek/Desktop/Politechnika/ROK$ 2/Beatka/PROJEKT2/beti_lista_4_zadanie_4.cpp || cmake_object_order_depends_target_PROJEKT2
-  DEP_FILE = CMakeFiles/PROJEKT2.dir/beti_lista_4_zadanie_4.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -std=gnu++17
+  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -fcolor-diagnostics -std=gnu++17
   OBJECT_DIR = CMakeFiles/PROJEKT2.dir
   OBJECT_FILE_DIR = CMakeFiles/PROJEKT2.dir
 
@@ -69,8 +63,8 @@ build CMakeFiles/PROJEKT2.dir/beti_lista_4_zadanie_4.cpp.o: CXX_COMPILER__PROJEK
 #############################################
 # Link the executable PROJEKT2
 
-build PROJEKT2: CXX_EXECUTABLE_LINKER__PROJEKT2_Debug CMakeFiles/PROJEKT2.dir/main.cpp.o CMakeFiles/PROJEKT2.dir/beti_lista_4_zadanie_4.cpp.o
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk
+build PROJEKT2: CXX_EXECUTABLE_LINKER__PROJEKT2_Debug CMakeFiles/PROJEKT2.dir/main.cpp.o
+  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   OBJECT_DIR = CMakeFiles/PROJEKT2.dir
   POST_BUILD = :
   PRE_LINK = :
