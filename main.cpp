@@ -2,36 +2,62 @@
 #include <fstream>
 #include <stdio.h>
 #include <chrono>
-#include <functional>
-
+#include <string>
+#include <stdlib.h>
+#include <ctime>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <set>
+#include <sstream>
 
 int rozmiar;
 
 void generowanie_pliku(const std::string& liczby) {
     std::ofstream plik("liczby.txt");
-    int zakresMin, zakresMax;
-    std::cout << "Podaj ilosc liczb\n";
+    int rozmiar, zakresMin, zakresMax;
+    std::cout << "Podaj ilosc liczb:\n";
     std::cin >> rozmiar;
-    std::cout << "Podaj zakres minimalny\n";
+    std::cout << "Podaj zakres minimalny:\n";
     std::cin >> zakresMin;
-    std::cout << "Podaj zakres maksymalny\n";
+    std::cout << "Podaj zakres maksymalny:\n";
     std::cin >> zakresMax;
 
-    // Inicjalizacja generatora liczb losowych na podstawie czasu
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    if (zakresMin > zakresMax) {
+        std::cout << "Zakres minimalny nie moze byc wiekszy od zakresu maksymalnego.\n";
+        return;
+    }
 
-    plik << rozmiar-1 << std::endl;
+    if (rozmiar > (zakresMax - zakresMin + 1)) {
+        std::cout << "Nie mozna wygenerowac " << rozmiar << " unikalnych liczb w podanym zakresie.\n";
+        return;
+    }
 
-    for (int i = 0; i < rozmiar-1; i++) {
-        int liczba = zakresMin + std::rand() % (zakresMax - zakresMin + 1);
+    std::vector<int> wygenerowaneLiczby;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> distrib(zakresMin, zakresMax);
+
+    std::set<int> unikalneLiczby;
+    while (unikalneLiczby.size() < rozmiar) {
+        int liczba = distrib(gen);
+        unikalneLiczby.insert(liczba);
+    }
+
+    std::copy(unikalneLiczby.begin(), unikalneLiczby.end(), std::back_inserter(wygenerowaneLiczby));
+
+    std::shuffle(wygenerowaneLiczby.begin(), wygenerowaneLiczby.end(), gen);
+
+    plik << rozmiar << std::endl;
+
+    for (int liczba : wygenerowaneLiczby) {
         plik << liczba << std::endl;
-        std::string nazwaPliku = "liczby.txt";
     }
 
     plik.close();
-    std::cout << "Wygenerowano plik z liczbami: " << liczby << std::endl;
-
-} // zrobione
+    std::cout << "Wygenerowano plik z unikalnymi liczbami: " << liczby << std::endl;
+} // zrobione, liczby są unikalne
 
 void wyswietl_zawartosc_pliku(const std::string& liczby){
     std::ifstream plik("liczby.txt");
@@ -424,81 +450,308 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
     }
 } // zrobione ale bez liczenia czasu
 
-struct drzewo_BST {
+
+
+//============================================= drzewo binarne kod =============================================
+
+
+
+struct Wezel {
     int wartosc;
-    drzewo_BST* lewy;
-    drzewo_BST* prawy;
+    Wezel* lewy;
+    Wezel* prawy;
 
-    drzewo_BST(int wartosc) {
-        this->wartosc = wartosc;
-        lewy = nullptr;
-        prawy = nullptr;
-    }
-
-    ~drzewo_BST() {
-        delete lewy;
-        delete prawy;
-    }
+    Wezel(int val) : wartosc(val), lewy(nullptr), prawy(nullptr) {}
 };
 
-void usun_drzewo(drzewo_BST* korzen) {
+Wezel* wstaw(Wezel* korzen, int wartosc) {
+    if (korzen == nullptr) {
+        return new Wezel(wartosc);
+    }
+
+    if (wartosc < korzen->wartosc) {
+        korzen->lewy = wstaw(korzen->lewy, wartosc);
+    } else {
+        korzen->prawy = wstaw(korzen->prawy, wartosc);
+    }
+
+    return korzen;
+}
+
+void zapiszDrzewoDoPliku(Wezel* korzen, std::ofstream& plik) {
     if (korzen == nullptr) {
         return;
     }
 
-    usun_drzewo(korzen->lewy);
-    usun_drzewo(korzen->prawy);
-    delete korzen;
+    zapiszDrzewoDoPliku(korzen->lewy, plik);
+    plik << korzen->wartosc << std::endl;
+    zapiszDrzewoDoPliku(korzen->prawy, plik);
 }
 
-void wypiszDrzewoBST(drzewo_BST* korzen, std::ofstream& plikWyjsciowy) {
-    if (korzen == nullptr) {
-        return;
-    }
-
-    wypiszDrzewoBST(korzen->lewy, plikWyjsciowy);
-    plikWyjsciowy << korzen->wartosc << " ";
-    wypiszDrzewoBST(korzen->prawy, plikWyjsciowy);
-}
-
-void wstaw_do_drzewa_na_poczatek(const std::string& liczby, int element){
-    drzewo_BST* korzen = nullptr;
-
+void utworzDrzewoBinarne() {
     std::ifstream plikWejsciowy("liczby.txt");
-    if (!plikWejsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+    if (!plikWejsciowy) {
+        std::cout << "Błąd podczas otwierania pliku." << std::endl;
         return;
     }
 
+    Wezel* korzen = nullptr;
     int liczba;
-    while (plikWejsciowy >> liczba) {
-        // Kod pominięty dla czytelności
+    std::string linia;
+
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> liczba) {
+            korzen = wstaw(korzen, liczba);
+        }
     }
+
     plikWejsciowy.close();
 
-    // Kod pominięty dla czytelności
-
-    std::ofstream plikWyjsciowy("liczby.txt");
-    if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
-        delete korzen;
+    std::ofstream plikWyjsciowy("drzewo.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas tworzenia pliku z drzewem." << std::endl;
         return;
     }
 
-    wypiszDrzewoBST(korzen, plikWyjsciowy);
+    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
 
     plikWyjsciowy.close();
 
-    delete korzen;
-
-    std::cout << "Element " << element << " został dodany na początek drzewa BST.\n";
-}// nie działa
-void wstaw_do_drzewa_na_koniec(const std::string& liczby, int element){
-
+    std::cout << "Drzewo binarne zostało zapisane do pliku: drzewo.txt" << std::endl;
 }
-void wstaw_do_drzewa_losowo(const std::string& liczby, int element){
 
+Wezel* dodajDoDrzewa(Wezel* korzen, int liczba) {
+    if (korzen == nullptr) {
+        return new Wezel(liczba);
+    }
+
+    Wezel* aktualny = korzen;
+    Wezel* rodzic = nullptr;
+
+    while (aktualny != nullptr) {
+        rodzic = aktualny;
+
+        if (liczba < aktualny->wartosc) {
+            aktualny = aktualny->lewy;
+        } else {
+            aktualny = aktualny->prawy;
+        }
+    }
+
+    if (liczba < rodzic->wartosc) {
+        rodzic->lewy = new Wezel(liczba);
+    } else {
+        rodzic->prawy = new Wezel(liczba);
+    }
+
+    return korzen;
 }
+
+void wstaw_do_drzewa(const std::string& liczby, int liczba) {
+    std::ifstream plikWejsciowy("drzewo.txt");
+    if (!plikWejsciowy) {
+        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        return;
+    }
+
+    Wezel* korzen = nullptr;
+    int wartosc;
+    std::string linia;
+
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> wartosc) {
+            korzen = wstaw(korzen, wartosc);
+        }
+    }
+
+    plikWejsciowy.close();
+
+    korzen = wstaw(korzen, liczba);
+
+    std::ofstream plikWyjsciowy("drzewo.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        return;
+    }
+
+    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+
+    plikWyjsciowy.close();
+
+    std::cout << "Liczba " << liczba << " została dodana do drzewa." << std::endl;
+} // zrobione ale bez liczenia czasu
+
+void usun_z_poczatku_drzewa() {
+    std::ifstream plikWejsciowy("drzewo.txt");
+    if (!plikWejsciowy) {
+        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        return;
+    }
+
+    Wezel* korzen = nullptr;
+    int wartosc;
+    std::string linia;
+
+    // Wczytaj drzewo z pliku
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> wartosc) {
+            korzen = wstaw(korzen, wartosc);
+        }
+    }
+
+    plikWejsciowy.close();
+
+    // Usuń pierwszy element z drzewa
+    if (korzen != nullptr) {
+        Wezel* temp = korzen;
+        korzen = korzen->prawy;
+        delete temp;
+    }
+
+    // Zapisz zmodyfikowane drzewo do pliku
+    std::ofstream plikWyjsciowy("drzewo.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        return;
+    }
+
+    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+
+    plikWyjsciowy.close();
+
+    std::cout << "Pierwszy element z drzewa został usunięty." << std::endl;
+} // zrobione ale bez liczenia czasu
+void usun_z_konca_drzewa() {
+    std::ifstream plikWejsciowy("drzewo.txt");
+    if (!plikWejsciowy) {
+        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        return;
+    }
+
+    Wezel* korzen = nullptr;
+    int wartosc;
+    std::string linia;
+
+    // Wczytaj drzewo z pliku
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> wartosc) {
+            korzen = wstaw(korzen, wartosc);
+        }
+    }
+
+    plikWejsciowy.close();
+
+    // Usuń ostatni element z drzewa
+    if (korzen != nullptr) {
+        Wezel* temp = korzen;
+        Wezel* parent = nullptr;
+
+        while (temp->prawy != nullptr) {
+            parent = temp;
+            temp = temp->prawy;
+        }
+
+        if (parent != nullptr) {
+            parent->prawy = temp->lewy;
+        } else {
+            korzen = temp->lewy;
+        }
+
+        delete temp;
+    }
+
+    // Zapisz zmodyfikowane drzewo do pliku
+    std::ofstream plikWyjsciowy("drzewo.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        return;
+    }
+
+    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+
+    plikWyjsciowy.close();
+
+    std::cout << "Ostatni element z drzewa został usunięty." << std::endl;
+} // zrobione ale bez liczenia czasu
+void usun_losowo_z_drzewa() {
+    std::ifstream plikWejsciowy("drzewo.txt");
+    if (!plikWejsciowy) {
+        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        return;
+    }
+
+    Wezel* korzen = nullptr;
+    int wartosc;
+    std::string linia;
+    std::vector<int> wartosci;
+
+    // Wczytaj drzewo z pliku i zapisz wartości w wektorze
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> wartosc) {
+            korzen = wstaw(korzen, wartosc);
+            wartosci.push_back(wartosc);
+        }
+    }
+
+    plikWejsciowy.close();
+
+    // Sprawdź, czy drzewo jest puste
+    if (korzen == nullptr || wartosci.empty()) {
+        std::cout << "Drzewo jest puste." << std::endl;
+        return;
+    }
+
+    // Wygeneruj losowy indeks elementu do usunięcia
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    int indeks = std::rand() % wartosci.size();
+    int element = wartosci[indeks];
+
+    // Usuń ostatni element z drzewa
+    if (korzen != nullptr) {
+        Wezel* temp = korzen;
+        Wezel* parent = nullptr;
+
+        while (temp->prawy != nullptr) {
+            parent = temp;
+            temp = temp->prawy;
+        }
+
+        if (parent != nullptr) {
+            parent->prawy = temp->lewy;
+        } else {
+            korzen = temp->lewy;
+        }
+
+        delete temp;
+    }
+
+    // Zapisz zmodyfikowane drzewo do pliku
+    std::ofstream plikWyjsciowy("drzewo.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        return;
+    }
+
+    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+
+    plikWyjsciowy.close();
+
+    std::cout << "Element " << element << " został usunięty z drzewa." << std::endl;
+} // zrobione ale bez liczenia czasu
+
+
+
+
+//============================================= koniec drzewa binarnego =============================================
+
+
+
+
 
 void wstaw_do_tablicy(){
     int element;
@@ -571,11 +824,10 @@ void wstaw_do_listy(){
         }
     }
 } // zrobione (tu się nie liczy czasu)
-void wstaw_do_drzewa(){
-    int element;
+void wstaw_do_drzewa_menu(){
+    int liczba;
     int choice;
-    std::cout<<"Wpisz element jaki chcesz dodać do drzewa\n";
-    std::cin>>element;
+
     std::ifstream plik("liczby.txt");
 
     if (!plik.is_open()) {
@@ -584,27 +836,26 @@ void wstaw_do_drzewa(){
     }
 
     while(true) {
-        std::cout << "Gdzie chcesz dodać element?\n";
-        std::cout << "1. Na początek\n";
-        std::cout << "2. Na koniec\n";
-        std::cout << "3. W losowe miejsce\n";
-        std::cout << "4. Powrót\n";
+        std::cout << "Jaki element chcesz dodać do drzewa?\n";
+        std::cout << "1. Wpisz samodzielnie\n";
+        std::cout << "2. Losowy\n";
+        std::cout << "3. Powrót\n";
         std::cin >> choice;
+
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano na początek\n";
-                wstaw_do_drzewa_na_poczatek("liczby.txt",element);
+                std::cout << "Wybrano samodzielne wpisanie\n";
+                std::cout << "Wpisz lelement jaki chcesz dodać do drzewa\n";
+                std::cin >> liczba;
+                wstaw_do_drzewa("liczby.txt",liczba);
                 break;
             case 2:
-                std::cout << "Wybrano na koniec\n";
-                wstaw_do_drzewa_na_koniec("liczby.txt",element);
+                std::cout << "Wybrano losową wartość\n";
+                liczba = rand() % 999 + 1;
+                wstaw_do_drzewa("liczby.txt",liczba);
                 break;
             case 3:
-                std::cout << "Wybrano losowe miejsce\n";
-                wstaw_do_drzewa_losowo("liczby.txt",element);
-                break;
-            case 4:
                 return;
         }
     }
@@ -634,7 +885,7 @@ void wstaw_element() {
                 break;
             case 3:
                 std::cout << "Wybrano wstawianie elementu do drzewa\n";
-                wstaw_do_drzewa();
+                wstaw_do_drzewa_menu();
                 break;
             case 4:
                 std::cout << "Wybrano powrót do menu głównego\n";
@@ -1038,16 +1289,6 @@ void usun_losowo_z_listy() {
     }
 } // zrobione z liczeniem czasu
 
-void usun_z_poczatku_drzewa(){
-
-}
-void usun_z_konca_drzewa(){
-
-}
-void usun_losowo_z_drzewa(){
-
-}
-
 void usun_z_tablicy(){
     int choice;
 
@@ -1106,7 +1347,7 @@ void usun_z_listy() {
         }
     }
 } // zrobione (tu się nie liczy czasu)
-void usun_z_drzewa(){
+void usun_z_drzewa_menu(){
     int choice;
 
     while(true) {
@@ -1161,7 +1402,7 @@ void usun_element(){
                 break;
             case 3:
                 std::cout << "Wybrano usunięcie elementu z drzewa\n";
-                usun_z_drzewa();
+                usun_z_drzewa_menu();
                 break;
             case 4:
                 std::cout << "Wybrano usunięcie z menu głównego\n";
@@ -1244,6 +1485,7 @@ void menu() {
         std::cout << "5. Szukaj elementu\n";
         std::cout << "6. Usuń plik z liczbami\n";
         std::cout << "7. Zakończ program\n";
+        std::cout << "8. Stwórz drzewo binarne\n";
         std::cout << "============================\n";
         std::cin >> choice;
 
@@ -1269,12 +1511,16 @@ void menu() {
                 szukanie_elementu();
                 break;
             case 6:
-                std::cout<< "Wybrano usunięcie pliku z liczbami\n";
+                std::cout << "Wybrano usunięcie pliku z liczbami\n";
                 usuniecie_pliku();
                 break;
             case 7:
-                std::cout<< "Wybrano zakończenie programu\n";
+                std::cout << "Wybrano zakończenie programu\n";
                 wyjscie_z_programu();
+                break;
+             case 8:
+                std::cout << "Wybrano sstworzenie drzewa binarnego\n";
+                utworzDrzewoBinarne();
                 break;
         }
 
