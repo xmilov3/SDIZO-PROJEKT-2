@@ -500,7 +500,7 @@ void utworz_tablice(){
 } // DOKOŃCZYĆ TWORZENIE TABLICY, ZAPISANIE DO PLIKU tablica.txt I OPEROWANIE NA NIEJ
 void utworz_liste(){
 
-} // DOKOŃCZYĆ TWORZENIE LISTY, ZAPISANIE DO PLIKU lista.txt I OPEROWANIE NA NIEJ
+} // DOKOŃCZYĆ TWORZENIE LISTY, ZAPISANIE DO PLIKU lista.txt I OPEROWANIE NA NIEJ xd
 void utworz_drzewo_binarne() {
     std::ifstream plikWejsciowy("liczby.txt");
     if (!plikWejsciowy) {
