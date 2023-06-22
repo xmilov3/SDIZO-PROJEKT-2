@@ -6,7 +6,7 @@
 #include <chrono>
 #include <string>
 int rozmiar;
-//xd
+//jebac putina
 void generowanie_pliku(const std::string& liczby) {
     std::ofstream plik("liczby.txt");
     int rozmiar, zakresMin, zakresMax;
