@@ -1,16 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
-#include <chrono>
-#include <string>
-#include <stdlib.h>
-#include <ctime>
-#include <vector>
-#include <algorithm>
 #include <random>
 #include <set>
 #include <sstream>
-
+#include <chrono>
+#include <string>
 int rozmiar;
 
 void generowanie_pliku(const std::string& liczby) {
@@ -222,6 +216,8 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
         return;
     }
 
+    auto czas_start = std::chrono::high_resolution_clock::now();
+
     int liczba;
 
     if (plik >> liczba) {
@@ -271,7 +267,6 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
 
     plikWyjsciowy.close();
 
-    std::cout << "Element został dodany na początek listy w pliku.\n";
 
     // Zwolnienie pamięci
     while (glowa != nullptr) {
@@ -279,7 +274,12 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
         glowa = glowa->nastepny;
         delete temp;
     }
-} //zrobione ale bez liczenia czasu
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+    std::cout << "Element został dodany na początek listy w pliku.\n";
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 void wstaw_do_listy_na_koniec(int element) {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
@@ -289,6 +289,8 @@ void wstaw_do_listy_na_koniec(int element) {
         std::cout << "Nie można otworzyć pliku.\n";
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     int liczba;
 
@@ -346,7 +348,6 @@ void wstaw_do_listy_na_koniec(int element) {
 
     plikWyjsciowy.close();
 
-    std::cout << "Element został dodany na koniec listy w pliku.\n";
 
     // Zwolnienie pamięci
     while (glowa != nullptr) {
@@ -354,7 +355,12 @@ void wstaw_do_listy_na_koniec(int element) {
         glowa = glowa->nastepny;
         delete temp;
     }
-} //zrobione ale bez liczenia czasu
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+    std::cout << "Element został dodany na koniec listy w pliku.\n";
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 void wstaw_do_listy_losowo(const std::string& liczby, int element) {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
@@ -364,6 +370,8 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
         std::cout << "Nie można otworzyć pliku.\n";
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     int liczba;
 
@@ -440,7 +448,7 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
 
     plikWyjsciowy.close();
 
-    std::cout << "Element został dodany na losowe miejsce w liście w pliku.\n";
+
 
     // Zwolnienie pamięci
     while (glowa != nullptr) {
@@ -448,13 +456,12 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
         glowa = glowa->nastepny;
         delete temp;
     }
-} // zrobione ale bez liczenia czasu
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-
-
-//============================================= drzewo binarne kod =============================================
-
-
+    std::cout << "Element został dodany na losowe miejsce w liście w pliku.\n";
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 
 struct Wezel {
     int wartosc;
@@ -478,22 +485,29 @@ Wezel* wstaw(Wezel* korzen, int wartosc) {
     return korzen;
 }
 
-void zapiszDrzewoDoPliku(Wezel* korzen, std::ofstream& plik) {
+void zapisz_drzewo_do_pliku(Wezel* korzen, std::ofstream& plik) {
     if (korzen == nullptr) {
         return;
     }
 
-    zapiszDrzewoDoPliku(korzen->lewy, plik);
+    zapisz_drzewo_do_pliku(korzen->lewy, plik);
     plik << korzen->wartosc << std::endl;
-    zapiszDrzewoDoPliku(korzen->prawy, plik);
+    zapisz_drzewo_do_pliku(korzen->prawy, plik);
 }
 
-void utworzDrzewoBinarne() {
+void utworz_tablice(){
+
+} // DOKOŃCZYĆ TWORZENIE TABLICY, ZAPISANIE DO PLIKU tablica.txt I OPEROWANIE NA NIEJ
+void utworz_liste(){
+
+} // DOKOŃCZYĆ TWORZENIE LISTY, ZAPISANIE DO PLIKU lista.txt I OPEROWANIE NA NIEJ
+void utworz_drzewo_binarne() {
     std::ifstream plikWejsciowy("liczby.txt");
     if (!plikWejsciowy) {
         std::cout << "Błąd podczas otwierania pliku." << std::endl;
         return;
     }
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     Wezel* korzen = nullptr;
     int liczba;
@@ -514,12 +528,16 @@ void utworzDrzewoBinarne() {
         return;
     }
 
-    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+    zapisz_drzewo_do_pliku(korzen, plikWyjsciowy);
 
     plikWyjsciowy.close();
 
-    std::cout << "Drzewo binarne zostało zapisane do pliku: drzewo.txt" << std::endl;
-}
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+    std::cout << "Drzewo binarne zostało utworzone i zapisane do pliku: drzewo.txt" << std::endl;
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 
 Wezel* dodajDoDrzewa(Wezel* korzen, int liczba) {
     if (korzen == nullptr) {
@@ -546,7 +564,7 @@ Wezel* dodajDoDrzewa(Wezel* korzen, int liczba) {
     }
 
     return korzen;
-}
+} // CHYBA DO USUNIĘCIA
 
 void wstaw_do_drzewa(const std::string& liczby, int liczba) {
     std::ifstream plikWejsciowy("drzewo.txt");
@@ -554,6 +572,8 @@ void wstaw_do_drzewa(const std::string& liczby, int liczba) {
         std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     Wezel* korzen = nullptr;
     int wartosc;
@@ -576,12 +596,17 @@ void wstaw_do_drzewa(const std::string& liczby, int liczba) {
         return;
     }
 
-    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+    zapisz_drzewo_do_pliku(korzen, plikWyjsciowy);
 
     plikWyjsciowy.close();
 
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
     std::cout << "Liczba " << liczba << " została dodana do drzewa." << std::endl;
-} // zrobione ale bez liczenia czasu
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 
 void usun_z_poczatku_drzewa() {
     std::ifstream plikWejsciowy("drzewo.txt");
@@ -589,6 +614,8 @@ void usun_z_poczatku_drzewa() {
         std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     Wezel* korzen = nullptr;
     int wartosc;
@@ -618,18 +645,25 @@ void usun_z_poczatku_drzewa() {
         return;
     }
 
-    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+    zapisz_drzewo_do_pliku(korzen, plikWyjsciowy);
 
     plikWyjsciowy.close();
 
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
     std::cout << "Pierwszy element z drzewa został usunięty." << std::endl;
-} // zrobione ale bez liczenia czasu
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 void usun_z_konca_drzewa() {
     std::ifstream plikWejsciowy("drzewo.txt");
     if (!plikWejsciowy) {
         std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     Wezel* korzen = nullptr;
     int wartosc;
@@ -671,18 +705,25 @@ void usun_z_konca_drzewa() {
         return;
     }
 
-    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+    zapisz_drzewo_do_pliku(korzen, plikWyjsciowy);
 
     plikWyjsciowy.close();
 
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
     std::cout << "Ostatni element z drzewa został usunięty." << std::endl;
-} // zrobione ale bez liczenia czasu
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 void usun_losowo_z_drzewa() {
     std::ifstream plikWejsciowy("drzewo.txt");
     if (!plikWejsciowy) {
         std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
 
     Wezel* korzen = nullptr;
     int wartosc;
@@ -737,20 +778,17 @@ void usun_losowo_z_drzewa() {
         return;
     }
 
-    zapiszDrzewoDoPliku(korzen, plikWyjsciowy);
+    zapisz_drzewo_do_pliku(korzen, plikWyjsciowy);
 
     plikWyjsciowy.close();
 
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
     std::cout << "Element " << element << " został usunięty z drzewa." << std::endl;
-} // zrobione ale bez liczenia czasu
-
-
-
-
-//============================================= koniec drzewa binarnego =============================================
-
-
-
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu
 
 
 void wstaw_do_tablicy(){
@@ -1409,7 +1447,7 @@ void usun_element(){
                 return;
         }
     }
-} // zrobione
+} // zrobione (tu się nie liczy czasu)
 
 void szukanie_elementu(){
     std::ifstream plik("liczby.txt");
@@ -1418,6 +1456,9 @@ void szukanie_elementu(){
         std::cout << "Nie można otworzyć pliku.\n";
         return;
     }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
+
     int element, szukany_element;
     std::cout << "Wpisz element którego szukasz\n";
     std::cin >> szukany_element;
@@ -1438,7 +1479,10 @@ void szukanie_elementu(){
     } else {
         std::cout << "Element " << szukany_element << " nie występuje w pliku\n";
     }
-} // zrobione
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
+} // zrobione z liczeniem czasu
 void usuniecie_pliku(){
     std::cout << "Czy na pewno chcesz zakończyć usunąć plik? (1 - Tak, 2 - Nie)\n";
     int wybor_usuniecie;
@@ -1457,7 +1501,7 @@ void usuniecie_pliku(){
     else {
         std::cout << "Niepoprawny wybór. Plik nie zostanie usunięty\n";
     }
-} // zrobione
+} // // zrobione (tu się nie liczy czasu)
 void wyjscie_z_programu(){
     std::cout << "Czy na pewno chcesz zakończyć program? (1 - Tak, 2 - Nie)\n";
     int wybor_wyjscie;
@@ -1472,7 +1516,7 @@ void wyjscie_z_programu(){
     else {
         std::cout << "Niepoprawny wybór. Program nie zostanie zakończony\n";
     }
-} // zrobione
+} // zrobione (tu się nie liczy czasu)
 void menu() {
     int choice;
 
@@ -1484,8 +1528,10 @@ void menu() {
         std::cout << "4. Usuń element\n";
         std::cout << "5. Szukaj elementu\n";
         std::cout << "6. Usuń plik z liczbami\n";
-        std::cout << "7. Zakończ program\n";
-        std::cout << "8. Stwórz drzewo binarne\n";
+        std::cout << "7. Stwórz tablicę\n";
+        std::cout << "8. Stwórz listę\n";
+        std::cout << "9. Stwórz drzewo binarne\n";
+        std::cout << "10. Zakończ program\n";
         std::cout << "============================\n";
         std::cin >> choice;
 
@@ -1515,18 +1561,26 @@ void menu() {
                 usuniecie_pliku();
                 break;
             case 7:
+                std::cout << "Wybrano stworzenie tablicy\n";
+                utworz_tablice();
+                break;
+            case 8:
+                std::cout << "Wybrano stworzenie listy\n";
+                utworz_liste();
+                break;
+            case 9:
+                std::cout << "Wybrano stworzenie drzewa binarnego\n";
+                utworz_drzewo_binarne();
+                break;
+            case 10:
                 std::cout << "Wybrano zakończenie programu\n";
                 wyjscie_z_programu();
-                break;
-             case 8:
-                std::cout << "Wybrano sstworzenie drzewa binarnego\n";
-                utworzDrzewoBinarne();
                 break;
         }
 
     }
 
-}
+} // zrobione (tu się nie liczy czasu)
 
 int main() {
     menu();
