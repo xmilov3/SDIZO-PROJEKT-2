@@ -5,8 +5,11 @@
 #include <sstream>
 #include <chrono>
 #include <string>
+#include <algorithm>
+#include <vector>
+
 int rozmiar;
-//jebac putina
+
 void generowanie_pliku(const std::string& liczby) {
     std::ofstream plik("liczby.txt");
     int rozmiar, zakresMin, zakresMax;
@@ -51,13 +54,13 @@ void generowanie_pliku(const std::string& liczby) {
 
     plik.close();
     std::cout << "Wygenerowano plik z unikalnymi liczbami: " << liczby << std::endl;
-} // zrobione, liczby są unikalne
+} // zrobione, liczby sa unikalne
 
 void wyswietl_zawartosc_pliku(const std::string& liczby){
     std::ifstream plik("liczby.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -70,10 +73,10 @@ void wyswietl_zawartosc_pliku(const std::string& liczby){
 } //zrobione
 
 void wstaw_do_tablicy_na_poczatek(int element) {
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("tablica.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -94,7 +97,7 @@ void wstaw_do_tablicy_na_poczatek(int element) {
     nowa_tablica[0] = element;
     rozmiar=rozmiar+1;
 
-    std::ofstream plik_wyjsciowy("liczby.txt");
+    std::ofstream plik_wyjsciowy("tablica.txt");
     plik_wyjsciowy << rozmiar << std::endl;
     for (int i = 0; i < rozmiar; i++) {
         plik_wyjsciowy << nowa_tablica[i] << std::endl;
@@ -107,57 +110,57 @@ void wstaw_do_tablicy_na_poczatek(int element) {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element został wstawiony pomyślnie do pliku liczby.txt.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+    std::cout << "Element zostal wstawiony pomyslnie do pliku tablica.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
     return;
-} // zrobione z liczeniem czasu
+} // zrobione z liczeniem czasu i z plikiem tablica.txt
 void wstaw_do_tablicy_na_koniec(int element){
-        std::ifstream plik("liczby.txt");
-
-        if (!plik.is_open()) {
-            std::cout << "Nie można otworzyć pliku.\n";
-            return;
-        }
-
-        auto czas_start = std::chrono::high_resolution_clock::now();
-
-        plik >> rozmiar;
-
-        int* tablica = new int[rozmiar];
-        for (int i = 0; i < rozmiar; i++) {
-            plik >> tablica[i];
-        }
-        plik.close();
-
-        int* nowa_tablica = new int[rozmiar + 1];
-        for (int i = 0; i < rozmiar; i++) {
-            nowa_tablica[i] = tablica[i];
-        }
-        nowa_tablica[rozmiar] = element;
-        rozmiar++;
-
-        std::ofstream plik_wyjsciowy("liczby.txt");
-        plik_wyjsciowy << rozmiar << std::endl;
-        for (int i = 0; i < rozmiar; i++) {
-            plik_wyjsciowy << nowa_tablica[i] << std::endl;
-        }
-        plik_wyjsciowy.close();
-
-        delete[] tablica;
-        delete[] nowa_tablica;
-
-        auto czas_koniec = std::chrono::high_resolution_clock::now();
-        auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
-
-        std::cout << "Element został wstawiony pomyślnie na koniec pliku liczby.txt.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-        return;
-    } // zrobione z liczeniem czasu
-void wstaw_do_tablicy_losowo(int element){
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("tablica.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
+        return;
+    }
+
+    auto czas_start = std::chrono::high_resolution_clock::now();
+
+    plik >> rozmiar;
+
+    int* tablica = new int[rozmiar];
+    for (int i = 0; i < rozmiar; i++) {
+        plik >> tablica[i];
+    }
+    plik.close();
+
+    int* nowa_tablica = new int[rozmiar + 1];
+    for (int i = 0; i < rozmiar; i++) {
+        nowa_tablica[i] = tablica[i];
+    }
+    nowa_tablica[rozmiar] = element;
+    rozmiar++;
+
+    std::ofstream plik_wyjsciowy("tablica.txt");
+    plik_wyjsciowy << rozmiar << std::endl;
+    for (int i = 0; i < rozmiar; i++) {
+        plik_wyjsciowy << nowa_tablica[i] << std::endl;
+    }
+    plik_wyjsciowy.close();
+
+    delete[] tablica;
+    delete[] nowa_tablica;
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+    std::cout << "Element zostal wstawiony pomyslnie na koniec pliku tablica.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+    return;
+} // zrobione z liczeniem czasu i z plikiem tablica.txt
+void wstaw_do_tablicy_losowo(int element){
+    std::ifstream plik("tablica.txt");
+
+    if (!plik.is_open()) {
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -183,7 +186,7 @@ void wstaw_do_tablicy_losowo(int element){
     }
     rozmiar++;
 
-    std::ofstream plik_wyjsciowy("liczby.txt");
+    std::ofstream plik_wyjsciowy("tablica.txt");
     plik_wyjsciowy << rozmiar << std::endl;
     for (int i = 0; i < rozmiar; i++) {
         plik_wyjsciowy << nowa_tablica[i] << std::endl;
@@ -196,23 +199,23 @@ void wstaw_do_tablicy_losowo(int element){
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element został wstawiony pomyślnie w losowe miejsce w pliku liczby.txt.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+    std::cout << "Element zostal wstawiony pomyslnie w losowe miejsce w pliku tablica.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
     return;
-} // zrobione z liczeniem czasu
+} // zrobione z liczeniem czasu i z plikiem tablica.txt
 
 struct WpisListy {
     int wartosc;
     WpisListy* nastepny;
 };
 
-void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
+void wstaw_do_listy_na_poczatek(int element) {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
 
-    std::ifstream plik(liczby);
+    std::ifstream plik("lista.txt");
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -221,10 +224,10 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
     int liczba;
 
     if (plik >> liczba) {
-        // Zwiększ wartość pierwszej liczby o 1
+        // Zwieksz wartosc pierwszej liczby o 1
         liczba += 1;
 
-        // Dodaj zwiększoną wartość jako pierwszy element listy
+        // Dodaj zwiekszona wartosc jako pierwszy element listy
         WpisListy* nowyWpis = new WpisListy;
         nowyWpis->wartosc = liczba;
         nowyWpis->nastepny = nullptr;
@@ -253,9 +256,9 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
     nowyWpis->nastepny = glowa->nastepny;
     glowa->nastepny = nowyWpis;
 
-    std::ofstream plikWyjsciowy(liczby);
+    std::ofstream plikWyjsciowy("lista.txt");
     if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -268,7 +271,7 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
     plikWyjsciowy.close();
 
 
-    // Zwolnienie pamięci
+    // Zwolnienie pamieci
     while (glowa != nullptr) {
         WpisListy* temp = glowa;
         glowa = glowa->nastepny;
@@ -277,16 +280,16 @@ void wstaw_do_listy_na_poczatek(const std::string& liczby, int element) {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element został dodany na początek listy w pliku.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-} // zrobione z liczeniem czasu
+    std::cout << "Element zostal dodany na poczatek listy w pliku lista.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu i z plikiem lista.txt
 void wstaw_do_listy_na_koniec(int element) {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
 
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("lista.txt");
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -295,10 +298,10 @@ void wstaw_do_listy_na_koniec(int element) {
     int liczba;
 
     if (plik >> liczba) {
-        // Zwiększ wartość pierwszej liczby o 1
+        // Zwieksz wartosc pierwszej liczby o 1
         liczba += 1;
 
-        // Dodaj zwiększoną wartość jako pierwszy element listy
+        // Dodaj zwiekszona wartosc jako pierwszy element listy
         WpisListy* nowyWpis = new WpisListy;
         nowyWpis->wartosc = liczba;
         nowyWpis->nastepny = nullptr;
@@ -334,9 +337,9 @@ void wstaw_do_listy_na_koniec(int element) {
         ogon = nowyWpis;
     }
 
-    std::ofstream plikWyjsciowy("liczby.txt");
+    std::ofstream plikWyjsciowy("lista.txt");
     if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -349,7 +352,7 @@ void wstaw_do_listy_na_koniec(int element) {
     plikWyjsciowy.close();
 
 
-    // Zwolnienie pamięci
+    // Zwolnienie pamieci
     while (glowa != nullptr) {
         WpisListy* temp = glowa;
         glowa = glowa->nastepny;
@@ -358,16 +361,16 @@ void wstaw_do_listy_na_koniec(int element) {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element został dodany na koniec listy w pliku.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-} // zrobione z liczeniem czasu
-void wstaw_do_listy_losowo(const std::string& liczby, int element) {
+    std::cout << "Element zostal dodany na koniec listy w pliku lista.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu i z plikiem lista.txt
+void wstaw_do_listy_losowo(int element) {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
 
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("lista.txt");
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -376,10 +379,10 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
     int liczba;
 
     if (plik >> liczba) {
-        // Zwiększ wartość pierwszej liczby o 1
+        // Zwieksz wartosc pierwszej liczby o 1
         liczba += 1;
 
-        // Dodaj zwiększoną wartość jako pierwszy element listy
+        // Dodaj zwiekszona wartosc jako pierwszy element listy
         WpisListy* nowyWpis = new WpisListy;
         nowyWpis->wartosc = liczba;
         nowyWpis->nastepny = nullptr;
@@ -413,7 +416,7 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
 
     int indeks = rand() % (iloscElementow + 1);
 
-    // Dodawanie elementu na losowe miejsce w liście
+    // Dodawanie elementu na losowe miejsce w liscie
     obecny = glowa;
     WpisListy* poprzedni = nullptr;
     int aktualnyIndeks = 0;
@@ -434,9 +437,9 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
         poprzedni->nastepny = nowyWpis;
     }
 
-    std::ofstream plikWyjsciowy(liczby);
+    std::ofstream plikWyjsciowy("lista.txt");
     if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -450,7 +453,7 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
 
 
 
-    // Zwolnienie pamięci
+    // Zwolnienie pamieci
     while (glowa != nullptr) {
         WpisListy* temp = glowa;
         glowa = glowa->nastepny;
@@ -459,9 +462,9 @@ void wstaw_do_listy_losowo(const std::string& liczby, int element) {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element został dodany na losowe miejsce w liście w pliku.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-} // zrobione z liczeniem czasu
+    std::cout << "Element zostal dodany na losowe miejsce w liscie w pliku lista.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu i z plikiem lista.txt
 
 struct Wezel {
     int wartosc;
@@ -496,15 +499,136 @@ void zapisz_drzewo_do_pliku(Wezel* korzen, std::ofstream& plik) {
 }
 
 void utworz_tablice(){
-
-} // DOKOŃCZYĆ TWORZENIE TABLICY, ZAPISANIE DO PLIKU tablica.txt I OPEROWANIE NA NIEJ
-void utworz_liste(){
-
-} // DOKOŃCZYĆ TWORZENIE LISTY, ZAPISANIE DO PLIKU lista.txt I OPEROWANIE NA NIEJ xd
-void utworz_drzewo_binarne() {
     std::ifstream plikWejsciowy("liczby.txt");
     if (!plikWejsciowy) {
         std::cout << "Błąd podczas otwierania pliku." << std::endl;
+        return;
+    }
+
+    std::vector<int> liczby;
+    int liczba;
+    std::string linia;
+
+    // Wczytaj liczby z pliku i zapisz je w wektorze
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> liczba) {
+            liczby.push_back(liczba);
+        }
+    }
+
+    plikWejsciowy.close();
+
+    // Sprawdź, czy udało się wczytać jakiekolwiek liczby
+    if (liczby.empty()) {
+        std::cout << "Brak liczb do utworzenia tablicy." << std::endl;
+        return;
+    }
+
+    // Tworzenie dynamicznej tablicy o rozmiarze wczytanych liczb
+    int rozmiar = liczby.size();
+    int* tablica = new int[rozmiar];
+    for (int i = 0; i < rozmiar; ++i) {
+        tablica[i] = liczby[i];
+    }
+
+    // Zapisz tablicę do pliku "tablica.txt"
+    std::ofstream plikWyjsciowy("tablica.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas tworzenia pliku z tablicą." << std::endl;
+        delete[] tablica; // Zwolnienie zaalokowanej pamięci
+        return;
+    }
+
+    for (int i = 0; i < rozmiar; ++i) {
+        plikWyjsciowy << tablica[i] << std::endl;
+    }
+
+    plikWyjsciowy.close();
+
+    std::cout << "Tablica została zapisana do pliku: tablica.txt" << std::endl;
+
+    // Zwolnienie zaalokowanej pamięci
+    delete[] tablica;
+} // zrobione
+void dodaj_do_pliku_lista(WpisListy*& glowa, int wartosc) {
+    WpisListy* nowyWpis = new WpisListy;
+    nowyWpis->wartosc = wartosc;
+    nowyWpis->nastepny = nullptr;
+
+    if (glowa == nullptr) {
+        glowa = nowyWpis;
+    } else {
+        WpisListy* aktualny = glowa;
+        while (aktualny->nastepny != nullptr) {
+            aktualny = aktualny->nastepny;
+        }
+        aktualny->nastepny = nowyWpis;
+    }
+}
+void utworz_liste(){
+    std::ifstream plikWejsciowy("liczby.txt");
+    if (!plikWejsciowy) {
+        std::cout << "Błąd podczas otwierania pliku." << std::endl;
+        return;
+    }
+
+    WpisListy* glowa = nullptr;
+    int liczba;
+    std::string linia;
+
+    // Wczytaj liczby z pliku i dodaj je do listy
+    while (std::getline(plikWejsciowy, linia)) {
+        std::istringstream iss(linia);
+        if (iss >> liczba) {
+            dodaj_do_pliku_lista(glowa, liczba);
+        }
+    }
+
+    plikWejsciowy.close();
+
+    // Sprawdź, czy udało się wczytać jakiekolwiek liczby
+    if (glowa == nullptr) {
+        std::cout << "Brak liczb do utworzenia listy." << std::endl;
+        return;
+    }
+
+    // Zapisz listę do pliku "lista.txt"
+    std::ofstream plikWyjsciowy("lista.txt");
+    if (!plikWyjsciowy) {
+        std::cout << "Błąd podczas tworzenia pliku z listą." << std::endl;
+        // Zwolnienie pamięci dla wszystkich elementów listy
+        WpisListy* aktualny = glowa;
+        while (aktualny != nullptr) {
+            WpisListy* nastepny = aktualny->nastepny;
+            delete aktualny;
+            aktualny = nastepny;
+        }
+        return;
+    }
+
+    WpisListy* aktualny = glowa;
+    while (aktualny != nullptr) {
+        plikWyjsciowy << aktualny->wartosc << std::endl;
+        aktualny = aktualny->nastepny;
+    }
+
+    plikWyjsciowy.close();
+
+    std::cout << "Lista została zapisana do pliku: lista.txt" << std::endl;
+
+    // Zwolnienie pamięci dla wszystkich elementów listy
+    aktualny = glowa;
+    while (aktualny != nullptr) {
+        WpisListy* nastepny = aktualny->nastepny;
+        delete aktualny;
+        aktualny = nastepny;
+    }
+} // zrobione
+void utworz_drzewo_binarne() {
+    std::ifstream plikWejsciowy("liczby.txt");
+    if (!plikWejsciowy) {
+        std::cout << "Blad podczas otwierania pliku." << std::endl;
         return;
     }
     auto czas_start = std::chrono::high_resolution_clock::now();
@@ -524,7 +648,7 @@ void utworz_drzewo_binarne() {
 
     std::ofstream plikWyjsciowy("drzewo.txt");
     if (!plikWyjsciowy) {
-        std::cout << "Błąd podczas tworzenia pliku z drzewem." << std::endl;
+        std::cout << "Blad podczas tworzenia pliku z drzewem." << std::endl;
         return;
     }
 
@@ -535,41 +659,14 @@ void utworz_drzewo_binarne() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Drzewo binarne zostało utworzone i zapisane do pliku: drzewo.txt" << std::endl;
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+    std::cout << "Drzewo binarne zostalo utworzone i zapisane do pliku: drzewo.txt" << std::endl;
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
 } // zrobione z liczeniem czasu
-
-Wezel* dodajDoDrzewa(Wezel* korzen, int liczba) {
-    if (korzen == nullptr) {
-        return new Wezel(liczba);
-    }
-
-    Wezel* aktualny = korzen;
-    Wezel* rodzic = nullptr;
-
-    while (aktualny != nullptr) {
-        rodzic = aktualny;
-
-        if (liczba < aktualny->wartosc) {
-            aktualny = aktualny->lewy;
-        } else {
-            aktualny = aktualny->prawy;
-        }
-    }
-
-    if (liczba < rodzic->wartosc) {
-        rodzic->lewy = new Wezel(liczba);
-    } else {
-        rodzic->prawy = new Wezel(liczba);
-    }
-
-    return korzen;
-} // CHYBA DO USUNIĘCIA
 
 void wstaw_do_drzewa(const std::string& liczby, int liczba) {
     std::ifstream plikWejsciowy("drzewo.txt");
     if (!plikWejsciowy) {
-        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        std::cout << "Blad podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
 
@@ -592,7 +689,7 @@ void wstaw_do_drzewa(const std::string& liczby, int liczba) {
 
     std::ofstream plikWyjsciowy("drzewo.txt");
     if (!plikWyjsciowy) {
-        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        std::cout << "Blad podczas zapisu drzewa do pliku." << std::endl;
         return;
     }
 
@@ -604,14 +701,14 @@ void wstaw_do_drzewa(const std::string& liczby, int liczba) {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Liczba " << liczba << " została dodana do drzewa." << std::endl;
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-} // zrobione z liczeniem czasu
+    std::cout << "Liczba " << liczba << " zostala dodana do drzewa." << std::endl;
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu i z plikiem drzewo.txt
 
 void usun_z_poczatku_drzewa() {
     std::ifstream plikWejsciowy("drzewo.txt");
     if (!plikWejsciowy) {
-        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        std::cout << "Blad podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
 
@@ -631,7 +728,7 @@ void usun_z_poczatku_drzewa() {
 
     plikWejsciowy.close();
 
-    // Usuń pierwszy element z drzewa
+    // Usun pierwszy element z drzewa
     if (korzen != nullptr) {
         Wezel* temp = korzen;
         korzen = korzen->prawy;
@@ -641,7 +738,7 @@ void usun_z_poczatku_drzewa() {
     // Zapisz zmodyfikowane drzewo do pliku
     std::ofstream plikWyjsciowy("drzewo.txt");
     if (!plikWyjsciowy) {
-        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        std::cout << "Blad podczas zapisu drzewa do pliku." << std::endl;
         return;
     }
 
@@ -653,13 +750,13 @@ void usun_z_poczatku_drzewa() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Pierwszy element z drzewa został usunięty." << std::endl;
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
+    std::cout << "Pierwszy element z drzewa zostal usuniety." << std::endl;
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
 } // zrobione z liczeniem czasu
 void usun_z_konca_drzewa() {
     std::ifstream plikWejsciowy("drzewo.txt");
     if (!plikWejsciowy) {
-        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        std::cout << "Blad podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
 
@@ -679,7 +776,7 @@ void usun_z_konca_drzewa() {
 
     plikWejsciowy.close();
 
-    // Usuń ostatni element z drzewa
+    // Usun ostatni element z drzewa
     if (korzen != nullptr) {
         Wezel* temp = korzen;
         Wezel* parent = nullptr;
@@ -701,7 +798,7 @@ void usun_z_konca_drzewa() {
     // Zapisz zmodyfikowane drzewo do pliku
     std::ofstream plikWyjsciowy("drzewo.txt");
     if (!plikWyjsciowy) {
-        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        std::cout << "Blad podczas zapisu drzewa do pliku." << std::endl;
         return;
     }
 
@@ -713,13 +810,13 @@ void usun_z_konca_drzewa() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Ostatni element z drzewa został usunięty." << std::endl;
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-} // zrobione z liczeniem czasu
+    std::cout << "Ostatni element z drzewa zostal usuniety." << std::endl;
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu i z plikiem drzewo.txt
 void usun_losowo_z_drzewa() {
     std::ifstream plikWejsciowy("drzewo.txt");
     if (!plikWejsciowy) {
-        std::cout << "Błąd podczas otwierania pliku z drzewem." << std::endl;
+        std::cout << "Blad podczas otwierania pliku z drzewem." << std::endl;
         return;
     }
 
@@ -730,7 +827,7 @@ void usun_losowo_z_drzewa() {
     std::string linia;
     std::vector<int> wartosci;
 
-    // Wczytaj drzewo z pliku i zapisz wartości w wektorze
+    // Wczytaj drzewo z pliku i zapisz wartosci w wektorze
     while (std::getline(plikWejsciowy, linia)) {
         std::istringstream iss(linia);
         if (iss >> wartosc) {
@@ -741,18 +838,18 @@ void usun_losowo_z_drzewa() {
 
     plikWejsciowy.close();
 
-    // Sprawdź, czy drzewo jest puste
+    // Sprawdz, czy drzewo jest puste
     if (korzen == nullptr || wartosci.empty()) {
         std::cout << "Drzewo jest puste." << std::endl;
         return;
     }
 
-    // Wygeneruj losowy indeks elementu do usunięcia
+    // Wygeneruj losowy indeks elementu do usuniecia
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     int indeks = std::rand() % wartosci.size();
     int element = wartosci[indeks];
 
-    // Usuń ostatni element z drzewa
+    // Usun ostatni element z drzewa
     if (korzen != nullptr) {
         Wezel* temp = korzen;
         Wezel* parent = nullptr;
@@ -774,7 +871,7 @@ void usun_losowo_z_drzewa() {
     // Zapisz zmodyfikowane drzewo do pliku
     std::ofstream plikWyjsciowy("drzewo.txt");
     if (!plikWyjsciowy) {
-        std::cout << "Błąd podczas zapisu drzewa do pliku." << std::endl;
+        std::cout << "Blad podczas zapisu drzewa do pliku." << std::endl;
         return;
     }
 
@@ -786,28 +883,27 @@ void usun_losowo_z_drzewa() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element " << element << " został usunięty z drzewa." << std::endl;
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund \n";
-} // zrobione z liczeniem czasu
-
+    std::cout << "Element " << element << " zostal usuniety z drzewa." << std::endl;
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund \n";
+} // zrobione z liczeniem czasu i z plikiem drzewo.txt
 
 void wstaw_do_tablicy(){
     int element;
     int choice;
-    std::cout<<"Wpisz element jaki chcesz dodać do tablicy\n";
+    std::cout<<"Wpisz element jaki chcesz dodac do tablicy\n";
     std::cin>>element;
 
     while(true) {
-        std::cout << "Gdzie chcesz dodać element?\n";
-        std::cout << "1. Na początek\n";
+        std::cout << "Gdzie chcesz dodac element?\n";
+        std::cout << "1. Na poczatek\n";
         std::cout << "2. Na koniec\n";
         std::cout << "3. W losowe miejsce\n";
-        std::cout << "4. Powrót\n";
+        std::cout << "4. Powrot\n";
         std::cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano na początek\n";
+                std::cout << "Wybrano na poczatek\n";
                 wstaw_do_tablicy_na_poczatek(element);
                 break;
             case 2:
@@ -823,31 +919,31 @@ void wstaw_do_tablicy(){
         }
     }
 
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 void wstaw_do_listy(){
     int element;
     int choice;
-    std::cout<<"Wpisz element jaki chcesz dodać do listy\n";
+    std::cout<<"Wpisz element jaki chcesz dodac do listy\n";
     std::cin>>element;
     std::ifstream plik("liczby.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
     while(true) {
-        std::cout << "Gdzie chcesz dodać element?\n";
-        std::cout << "1. Na początek\n";
+        std::cout << "Gdzie chcesz dodac element?\n";
+        std::cout << "1. Na poczatek\n";
         std::cout << "2. Na koniec\n";
         std::cout << "3. W losowe miejsce\n";
-        std::cout << "4. Powrót\n";
+        std::cout << "4. Powrot\n";
         std::cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano na początek\n";
-                wstaw_do_listy_na_poczatek("liczby.txt",element);
+                std::cout << "Wybrano na poczatek\n";
+                wstaw_do_listy_na_poczatek(element);
                 break;
             case 2:
                 std::cout << "Wybrano na koniec\n";
@@ -855,13 +951,13 @@ void wstaw_do_listy(){
                 break;
             case 3:
                 std::cout << "Wybrano losowe miejsce\n";
-                wstaw_do_listy_losowo("liczby.txt",element);
+                wstaw_do_listy_losowo(element);
                 break;
             case 4:
                 return;
         }
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 void wstaw_do_drzewa_menu(){
     int liczba;
     int choice;
@@ -869,27 +965,27 @@ void wstaw_do_drzewa_menu(){
     std::ifstream plik("liczby.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
     while(true) {
-        std::cout << "Jaki element chcesz dodać do drzewa?\n";
+        std::cout << "Jaki element chcesz dodac do drzewa?\n";
         std::cout << "1. Wpisz samodzielnie\n";
         std::cout << "2. Losowy\n";
-        std::cout << "3. Powrót\n";
+        std::cout << "3. Powrot\n";
         std::cin >> choice;
 
 
         switch (choice) {
             case 1:
                 std::cout << "Wybrano samodzielne wpisanie\n";
-                std::cout << "Wpisz lelement jaki chcesz dodać do drzewa\n";
+                std::cout << "Wpisz lelement jaki chcesz dodac do drzewa\n";
                 std::cin >> liczba;
                 wstaw_do_drzewa("liczby.txt",liczba);
                 break;
             case 2:
-                std::cout << "Wybrano losową wartość\n";
+                std::cout << "Wybrano losowa wartosc\n";
                 liczba = rand() % 999 + 1;
                 wstaw_do_drzewa("liczby.txt",liczba);
                 break;
@@ -897,18 +993,18 @@ void wstaw_do_drzewa_menu(){
                 return;
         }
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 void wstaw_element() {
 
     int choice;
 
     while (true) {
         std::cout << "==== MENU WSTAWIANIA ELEMENTU ====\n";
-        std::cout << "Gdzie chcesz wstawić element?\n";
+        std::cout << "Gdzie chcesz wstawic element?\n";
         std::cout << "1. Wstaw element do tablicy\n";
         std::cout << "2. Wstaw element do listy\n";
         std::cout << "3. Wstaw element do drzewa\n";
-        std::cout << "4. Wróć do menu głównego\n";
+        std::cout << "4. Wroc do menu glownego\n";
         std::cout << "==================================\n";
         std::cin >> choice;
 
@@ -926,17 +1022,17 @@ void wstaw_element() {
                 wstaw_do_drzewa_menu();
                 break;
             case 4:
-                std::cout << "Wybrano powrót do menu głównego\n";
+                std::cout << "Wybrano powrot do menu glownego\n";
                 return;
         }
     }
-} //  zrobione (tu się nie liczy czasu)
+} //  zrobione (tu sie nie liczy czasu)
 
 void usun_z_poczatku_tablicy() {
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("tablica.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -961,7 +1057,7 @@ void usun_z_poczatku_tablicy() {
 
     rozmiar -= 1;
 
-    std::ofstream plik_wyjsciowy("liczby.txt");
+    std::ofstream plik_wyjsciowy("tablica.txt");
     plik_wyjsciowy << rozmiar << std::endl;
     for (int i = 0; i < rozmiar; i++) {
         plik_wyjsciowy << tablica[i] << std::endl;
@@ -973,14 +1069,14 @@ void usun_z_poczatku_tablicy() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Druga liczba z tablicy została usunięta, a pierwsza liczba została zmniejszona o 1.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
-} // zrobione z liczeniem czasu
+    std::cout << "Pierwszy element z tablicy zostal usuniety\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
+} // zrobione z liczeniem czasu i z plikiem tablica.txt
 void usun_z_konca_tablicy() {
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("tablica.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -1002,7 +1098,7 @@ void usun_z_konca_tablicy() {
 
     rozmiar -= 1;
 
-    std::ofstream plik_wyjsciowy("liczby.txt");
+    std::ofstream plik_wyjsciowy("tablica.txt");
     plik_wyjsciowy << rozmiar << std::endl;
     for (int i = 0; i < rozmiar; i++) {
         plik_wyjsciowy << tablica[i] << std::endl;
@@ -1014,14 +1110,14 @@ void usun_z_konca_tablicy() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Ostatni element tablicy został usunięty.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
-} // zrobione z liczeniem czasu
+    std::cout << "Ostatni element tablicy zostal usuniety.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
+} // zrobione z liczeniem czasu i z plikiem tablica.txt
 void usun_z_losowo_z_tablicy() {
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("tablica.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -1041,7 +1137,7 @@ void usun_z_losowo_z_tablicy() {
     }
     plik.close();
 
-    // Znajdowanie losowego indeksu elementu do usunięcia
+    // Znajdowanie losowego indeksu elementu do usuniecia
     int indeks = rand() % rozmiar;
 
     // Usuwanie elementu z losowego miejsca
@@ -1051,7 +1147,7 @@ void usun_z_losowo_z_tablicy() {
 
     rozmiar -= 1;
 
-    std::ofstream plik_wyjsciowy("liczby.txt");
+    std::ofstream plik_wyjsciowy("tablica.txt");
     plik_wyjsciowy << rozmiar << std::endl;
     for (int i = 0; i < rozmiar; i++) {
         plik_wyjsciowy << tablica[i] << std::endl;
@@ -1063,17 +1159,17 @@ void usun_z_losowo_z_tablicy() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Element z losowego miejsca tablicy został usunięty.\n";
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
-} // zrobione z liczeniem czasu
+    std::cout << "Element z losowego miejsca tablicy zostal usuniety.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
+} // zrobione z liczeniem czasu i z plikiem tablica.txt
 
 void usun_z_poczatku_listy() {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
 
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("lista.txt");
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -1082,10 +1178,10 @@ void usun_z_poczatku_listy() {
     int liczba;
 
     if (plik >> liczba) {
-        // Zmniejsz wartość pierwszej liczby o 1
+        // Zmniejsz wartosc pierwszej liczby o 1
         liczba -= 1;
 
-        // Dodaj zaktualizowaną wartość jako pierwszy element listy
+        // Dodaj zaktualizowana wartosc jako pierwszy element listy
         WpisListy* nowyWpis = new WpisListy;
         nowyWpis->wartosc = liczba;
         nowyWpis->nastepny = nullptr;
@@ -1109,15 +1205,15 @@ void usun_z_poczatku_listy() {
 
     plik.close();
 
-    // Usunięcie pierwszego elementu z listy
+    // Usuniecie pierwszego elementu z listy
     WpisListy* drugiWpis = glowa->nastepny;
     glowa->nastepny = drugiWpis->nastepny;
     delete drugiWpis;
 
-    std::ofstream plikWyjsciowy("liczby.txt");
+    std::ofstream plikWyjsciowy("lista.txt");
     if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
-        // Zwolnienie pamięci
+        std::cout << "Nie mozna otworzyc pliku.\n";
+        // Zwolnienie pamieci
         while (glowa != nullptr) {
             WpisListy* temp = glowa;
             glowa = glowa->nastepny;
@@ -1134,9 +1230,7 @@ void usun_z_poczatku_listy() {
 
     plikWyjsciowy.close();
 
-    std::cout << "Drugi element został usunięty z listy w pliku.\n";
-
-    // Zwolnienie pamięci
+    // Zwolnienie pamieci
     while (glowa != nullptr) {
         WpisListy* temp = glowa;
         glowa = glowa->nastepny;
@@ -1145,15 +1239,16 @@ void usun_z_poczatku_listy() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
-} // zrobione z liczeniem czasu
+    std::cout << "Pierwszy element zostal usuniety z listy w pliku lista.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
+} // zrobione z liczeniem czasu i z plikiem lista.txt
 void usun_z_konca_listy() {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
 
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("lista.txt");
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -1161,10 +1256,10 @@ void usun_z_konca_listy() {
 
     int liczba;
     if (plik >> liczba) {
-        // Zwiększ wartość pierwszej liczby o 1
+        // Zwieksz wartosc pierwszej liczby o 1
         liczba -= 1;
 
-        // Dodaj zwiększoną wartość jako pierwszy element listy
+        // Dodaj zwiekszona wartosc jako pierwszy element listy
         WpisListy* nowyWpis = new WpisListy;
         nowyWpis->wartosc = liczba;
         nowyWpis->nastepny = nullptr;
@@ -1205,13 +1300,13 @@ void usun_z_konca_listy() {
         przedostatni = przedostatni->nastepny;
     }
 
-    // Usunięcie ostatniego elementu
+    // Usuniecie ostatniego elementu
     delete przedostatni->nastepny;
     przedostatni->nastepny = nullptr;
 
-    std::ofstream plikWyjsciowy("liczby.txt");
+    std::ofstream plikWyjsciowy("lista.txt");
     if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -1224,7 +1319,7 @@ void usun_z_konca_listy() {
     plikWyjsciowy.close();
 
 
-    // Zwolnienie pamięci
+    // Zwolnienie pamieci
     while (glowa != nullptr) {
         WpisListy* temp = glowa;
         glowa = glowa->nastepny;
@@ -1234,24 +1329,25 @@ void usun_z_konca_listy() {
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
 
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
-} // zrobione z liczeniem czasu
+    std::cout << "Ostatni element zostal usuniety z listy w pliku lista.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
+} // zrobione z liczeniem czasu i z plikiem lista.txt
 void usun_losowo_z_listy() {
     WpisListy* glowa = nullptr;
     WpisListy* ogon = nullptr;
 
-    std::ifstream plik("liczby.txt");
+    std::ifstream plik("lista.txt");
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
     auto czas_start = std::chrono::high_resolution_clock::now();
     int liczba;
     if (plik >> liczba) {
-        // Zwiększ wartość pierwszej liczby o 1
+        // Zwieksz wartosc pierwszej liczby o 1
         liczba -= 1;
 
-        // Dodaj zwiększoną wartość jako pierwszy element listy
+        // Dodaj zwiekszona wartosc jako pierwszy element listy
         WpisListy* nowyWpis = new WpisListy;
         nowyWpis->wartosc = liczba;
         nowyWpis->nastepny = nullptr;
@@ -1286,24 +1382,24 @@ void usun_losowo_z_listy() {
         return;
     }
 
-    // Znajdowanie losowego indeksu elementu do usunięcia
+    // Znajdowanie losowego indeksu elementu do usuniecia
     srand(time(nullptr));
     int indeks = rand() % (rozmiar - 1) + 1;
 
-    // Znalezienie elementu przed elementem do usunięcia
+    // Znalezienie elementu przed elementem do usuniecia
     WpisListy* przedUsunieciem = glowa;
     for (int i = 0; i < indeks - 1; i++) {
         przedUsunieciem = przedUsunieciem->nastepny;
     }
 
-    // Usunięcie elementu
+    // Usuniecie elementu
     WpisListy* temp = przedUsunieciem->nastepny;
     przedUsunieciem->nastepny = temp->nastepny;
     delete temp;
 
-    std::ofstream plikWyjsciowy("liczby.txt");
+    std::ofstream plikWyjsciowy("lista.txt");
     if (!plikWyjsciowy.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
@@ -1315,105 +1411,109 @@ void usun_losowo_z_listy() {
 
     plikWyjsciowy.close();
 
-    auto czas_koniec = std::chrono::high_resolution_clock::now();
-    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
-
-    // Zwolnienie pamięci
+    // Zwolnienie pamieci
     while (glowa != nullptr) {
         WpisListy* temp = glowa;
         glowa = glowa->nastepny;
         delete temp;
     }
-} // zrobione z liczeniem czasu
+
+    auto czas_koniec = std::chrono::high_resolution_clock::now();
+    auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
+
+    std::cout << "Losowy element zostal usuniety z listy w pliku lista.txt.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
+
+
+} // zrobione z liczeniem czasu i z plikiem lista.txt
 
 void usun_z_tablicy(){
     int choice;
 
     while(true) {
-        std::cout << "Który element chcesz usunąć z tablicy?\n";
-        std::cout << "1. Z początku\n";
-        std::cout << "2. Z końca\n";
+        std::cout << "Ktory element chcesz usunac z tablicy?\n";
+        std::cout << "1. Z poczatku\n";
+        std::cout << "2. Z konca\n";
         std::cout << "3. Z losowego miejsca\n";
-        std::cout << "4. Powrót\n";
+        std::cout << "4. Powrot\n";
         std::cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano usunięcie z początku\n";
+                std::cout << "Wybrano usuniecie z poczatku\n";
                 usun_z_poczatku_tablicy();
                 break;
             case 2:
-                std::cout << "Wybrano usunięcie z końca\n";
+                std::cout << "Wybrano usuniecie z konca\n";
                 usun_z_konca_tablicy();
                 break;
             case 3:
-                std::cout << "Wybrano usunięcie z losowego miejsca\n";
+                std::cout << "Wybrano usuniecie z losowego miejsca\n";
                 usun_z_losowo_z_tablicy();
                 break;
             case 4:
                 return;
         }
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 void usun_z_listy() {
     int choice;
 
     while(true) {
-        std::cout << "Który element chcesz usunąć z listy?\n";
-        std::cout << "1. Z początku\n";
-        std::cout << "2. Z końca\n";
+        std::cout << "Ktory element chcesz usunac z listy?\n";
+        std::cout << "1. Z poczatku\n";
+        std::cout << "2. Z konca\n";
         std::cout << "3. Z losowego miejsca\n";
-        std::cout << "4. Powrót\n";
+        std::cout << "4. Powrot\n";
         std::cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano usunięcie z początku\n";
+                std::cout << "Wybrano usuniecie z poczatku\n";
                 usun_z_poczatku_listy();
                 break;
             case 2:
-                std::cout << "Wybrano usunięcie z końca\n";
+                std::cout << "Wybrano usuniecie z konca\n";
                 usun_z_konca_listy();
                 break;
             case 3:
-                std::cout << "Wybrano usunięcie z losowego miejsca\n";
+                std::cout << "Wybrano usuniecie z losowego miejsca\n";
                 usun_losowo_z_listy();
                 break;
             case 4:
                 return;
         }
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 void usun_z_drzewa_menu(){
     int choice;
 
     while(true) {
-        std::cout << "Który element chcesz usunąć z drzewa?\n";
-        std::cout << "1. Z początku\n";
-        std::cout << "2. Z końca\n";
+        std::cout << "Ktory element chcesz usunac z drzewa?\n";
+        std::cout << "1. Z poczatku\n";
+        std::cout << "2. Z konca\n";
         std::cout << "3. Z losowego miejsca\n";
-        std::cout << "4. Powrót\n";
+        std::cout << "4. Powrot\n";
         std::cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano usunięcie z początku\n";
+                std::cout << "Wybrano usuniecie z poczatku\n";
                 usun_z_poczatku_drzewa();
                 break;
             case 2:
-                std::cout << "Wybrano usunięcie z końca\n";
+                std::cout << "Wybrano usuniecie z konca\n";
                 usun_z_konca_drzewa();
                 break;
             case 3:
-                std::cout << "Wybrano usunięcie z losowego miejsca\n";
+                std::cout << "Wybrano usuniecie z losowego miejsca\n";
                 usun_losowo_z_drzewa();
                 break;
             case 4:
                 return;
         }
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 
 void usun_element(){
 
@@ -1421,46 +1521,46 @@ void usun_element(){
 
     while (true) {
         std::cout << "==== MENU USUWANIA ELEMENTU ====\n";
-        std::cout << "Skąd chcesz usunąć element?\n";
-        std::cout << "1. Usuń element z tablicy\n";
-        std::cout << "2. Usuń element z listy\n";
-        std::cout << "3. Usuń element z drzewa\n";
-        std::cout << "4. Wróć do menu głównego\n";
+        std::cout << "Skad chcesz usunac element?\n";
+        std::cout << "1. Usun element z tablicy\n";
+        std::cout << "2. Usun element z listy\n";
+        std::cout << "3. Usun element z drzewa\n";
+        std::cout << "4. Wroc do menu glownego\n";
         std::cout << "==================================\n";
         std::cin >> choice;
 
         switch (choice) {
             case 1:
-                std::cout << "Wybrano usunięcie elementu z tablicy\n";
+                std::cout << "Wybrano usuniecie elementu z tablicy\n";
                 usun_z_tablicy();
                 break;
             case 2:
-                std::cout << "Wybrano usunięcie elementu z listy\n";
+                std::cout << "Wybrano usuniecie elementu z listy\n";
                 usun_z_listy();
                 break;
             case 3:
-                std::cout << "Wybrano usunięcie elementu z drzewa\n";
+                std::cout << "Wybrano usuniecie elementu z drzewa\n";
                 usun_z_drzewa_menu();
                 break;
             case 4:
-                std::cout << "Wybrano usunięcie z menu głównego\n";
+                std::cout << "Wybrano usuniecie z menu glownego\n";
                 return;
         }
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 
 void szukanie_elementu(){
     std::ifstream plik("liczby.txt");
 
     if (!plik.is_open()) {
-        std::cout << "Nie można otworzyć pliku.\n";
+        std::cout << "Nie mozna otworzyc pliku.\n";
         return;
     }
 
     auto czas_start = std::chrono::high_resolution_clock::now();
 
     int element, szukany_element;
-    std::cout << "Wpisz element którego szukasz\n";
+    std::cout << "Wpisz element ktorego szukasz\n";
     std::cin >> szukany_element;
 
     bool czy_znaleziono = false;
@@ -1475,63 +1575,63 @@ void szukanie_elementu(){
     plik.close();
 
     if (czy_znaleziono) {
-        std::cout << "Element " << szukany_element << " znajduje się w pliku\n";
+        std::cout << "Element " << szukany_element << " znajduje sie w pliku\n";
     } else {
-        std::cout << "Element " << szukany_element << " nie występuje w pliku\n";
+        std::cout << "Element " << szukany_element << " nie wystepuje w pliku\n";
     }
     auto czas_koniec = std::chrono::high_resolution_clock::now();
     auto czas_trwania = std::chrono::duration_cast<std::chrono::microseconds>(czas_koniec - czas_start).count();
-    std::cout << "Operacja trwała " << czas_trwania << " mikrosekund.\n";
+    std::cout << "Operacja trwala " << czas_trwania << " mikrosekund.\n";
 } // zrobione z liczeniem czasu
 void usuniecie_pliku(){
-    std::cout << "Czy na pewno chcesz zakończyć usunąć plik? (1 - Tak, 2 - Nie)\n";
+    std::cout << "Czy na pewno chcesz zakonczyc usunac plik? (1 - Tak, 2 - Nie)\n";
     int wybor_usuniecie;
     std::cin >> wybor_usuniecie;
     if (wybor_usuniecie == 1) {
-        std::cout << "Wybrano usunięcie. Plik zostanie usunięty\n";
+        std::cout << "Wybrano usuniecie. Plik zostanie usuniety\n";
         if (std::remove("liczby.txt") == 0) {
-            std::cout << "Plik został usunięty\n";
+            std::cout << "Plik zostal usuniety\n";
         } else {
-            std::cout << "Nie udało się usunąć pliku\n";
+            std::cout << "Nie udalo sie usunac pliku\n";
         }
     }
     else if (wybor_usuniecie == 2){
-        std::cout << "Anulowano usunięcie. Plik nie zostanie usunięty\n";
+        std::cout << "Anulowano usuniecie. Plik nie zostanie usuniety\n";
     }
     else {
-        std::cout << "Niepoprawny wybór. Plik nie zostanie usunięty\n";
+        std::cout << "Niepoprawny wybor. Plik nie zostanie usuniety\n";
     }
-} // // zrobione (tu się nie liczy czasu)
+} // // zrobione (tu sie nie liczy czasu)
 void wyjscie_z_programu(){
-    std::cout << "Czy na pewno chcesz zakończyć program? (1 - Tak, 2 - Nie)\n";
+    std::cout << "Czy na pewno chcesz zakonczyc program? (1 - Tak, 2 - Nie)\n";
     int wybor_wyjscie;
     std::cin >> wybor_wyjscie;
     if (wybor_wyjscie == 1) {
-        std::cout << "Wybrano wyjście. Program zostanie zakończony\n";
+        std::cout << "Wybrano wyjscie. Program zostanie zakonczony\n";
         exit(0);
     }
     else if (wybor_wyjscie == 2){
-        std::cout << "Anulowano wyjście. Program nie zostanie zakończony\n";
+        std::cout << "Anulowano wyjscie. Program nie zostanie zakonczony\n";
     }
     else {
-        std::cout << "Niepoprawny wybór. Program nie zostanie zakończony\n";
+        std::cout << "Niepoprawny wybor. Program nie zostanie zakonczony\n";
     }
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 void menu() {
     int choice;
 
     while (true) {
         std::cout << "=========== MENU ===========\n";
         std::cout << "1. Wygeneruj plik z liczbami\n";
-        std::cout << "2. Wyświetl plik z liczbami\n";
+        std::cout << "2. Wyswietl plik z liczbami\n";
         std::cout << "3. Wstaw element\n";
-        std::cout << "4. Usuń element\n";
-        std::cout << "5. Szukaj elementu\n";
-        std::cout << "6. Usuń plik z liczbami\n";
-        std::cout << "7. Stwórz tablicę\n";
-        std::cout << "8. Stwórz listę\n";
-        std::cout << "9. Stwórz drzewo binarne\n";
-        std::cout << "10. Zakończ program\n";
+        std::cout << "4. Usun element\n";
+        std::cout << "5. Szukaj elementu w pliku liczby.txt\n";
+        std::cout << "6. Usun plik z liczbami\n";
+        std::cout << "7. Stworz tablice\n";
+        std::cout << "8. Stworz liste\n";
+        std::cout << "9. Stworz drzewo binarne\n";
+        std::cout << "10. Zakoncz program\n";
         std::cout << "============================\n";
         std::cin >> choice;
 
@@ -1541,7 +1641,7 @@ void menu() {
                 generowanie_pliku("liczby.txt");
                 break;
             case 2:
-                std::cout << "Wybrano wyświetlenie.\n";
+                std::cout << "Wybrano wyswietlenie.\n";
                 wyswietl_zawartosc_pliku("liczby.txt");
                 break;
             case 3:
@@ -1557,7 +1657,7 @@ void menu() {
                 szukanie_elementu();
                 break;
             case 6:
-                std::cout << "Wybrano usunięcie pliku z liczbami\n";
+                std::cout << "Wybrano usuniecie pliku z liczbami\n";
                 usuniecie_pliku();
                 break;
             case 7:
@@ -1573,14 +1673,14 @@ void menu() {
                 utworz_drzewo_binarne();
                 break;
             case 10:
-                std::cout << "Wybrano zakończenie programu\n";
+                std::cout << "Wybrano zakonczenie programu\n";
                 wyjscie_z_programu();
                 break;
         }
 
     }
 
-} // zrobione (tu się nie liczy czasu)
+} // zrobione (tu sie nie liczy czasu)
 
 int main() {
     menu();
